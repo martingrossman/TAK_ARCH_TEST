@@ -1,0 +1,63 @@
+name: Upload to Google sandbox (manual)
+on:
+  workflow_dispatch:
+    inputs:
+      architecture:
+        description: Sandbox architecture
+        type: choice
+        options: [bound, central]
+        required: true
+      confirmation:
+        description: 'Type UPLOAD SANDBOX to replace the selected lab script code'
+        type: string
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: sandbox-upload-${{ inputs.architecture }}
+  cancel-in-progress: false
+jobs:
+  upload:
+    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'UPLOAD SANDBOX'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.architecture }}-lab
+    env:
+      ARCHITECTURE: ${{ inputs.architecture }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run verify
+      - name: Configure sandbox target
+        env:
+          SCRIPT_ID: ${{ vars.SCRIPT_ID }}
+        run: node tools/setup.mjs "$ARCHITECTURE" "$SCRIPT_ID"
+      - name: Restore Google credentials
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          import { homedir } from 'node:os';
+          import { join } from 'node:path';
+          const raw = process.env.CLASPRC_JSON;
+          if (!raw) throw new Error('Set the environment secret CLASPRC_JSON first.');
+          JSON.parse(raw);
+          writeFileSync(join(homedir(), '.clasprc.json'), raw, { mode: 0o600 });
+          NODE
+      - name: Upload HEAD source to the selected sandbox
+        run: |
+          cd "examples/$ARCHITECTURE"
+          npx --yes @google/clasp@3.4.1 push --force
+      - name: Remove temporary credentials
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import { rmSync } from 'node:fs';
+          import { homedir } from 'node:os';
+          import { join } from 'node:path';
+          rmSync(join(homedir(), '.clasprc.json'), { force: true });
+          NODE

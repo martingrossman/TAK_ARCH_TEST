@@ -1,0 +1,15 @@
+{
+  "name": "tak-arch-test",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tiny Google Sheets and Apps Script architecture lab",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "check": "node tools/check.mjs",
+    "verify": "npm run check && npm test",
+    "setup": "node tools/setup.mjs",
+    "provision": "node tools/provision.mjs"
+  }
+}
