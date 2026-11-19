@@ -6,6 +6,17 @@ Plain JavaScript keeps the examples readable: no compiler, bundler, runtime npm
 dependencies, or test framework. Node's built-in test runner handles local checks.
 Google executes the actual Apps Script; Node only checks and tests it with mocks.
 
+## Architecture diagrams and updating users
+
+Read [Architecture and remote updates](docs/architecture-and-updates.md) for four
+Mermaid diagrams, a two-user bound-script update example, permissions, rollout,
+and rollback. It explains how one Git codebase can update many separate scripts
+without using a central runtime. View the Markdown in GitHub or a Markdown
+preview that supports Mermaid to see the diagrams rendered.
+
+The existing upload workflow updates one configured script per run. Updating a
+whole group of users is described as a future extension, not implemented here.
+
 ## Start locally (no Google account needed)
 
 Use Node 24 LTS (see `.nvmrc`) and Git. In Windows PowerShell:
