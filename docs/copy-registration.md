@@ -29,10 +29,10 @@ sequenceDiagram
     User->>Copy: Click Activate this copy and authorize
     Copy->>Copy: Read live Script ID and Spreadsheet ID
     Copy->>Registry: Send invitation, both IDs, and code version
-    Registry->>Registry: Check invitation; bind it to this copy
+    Registry->>Registry: Check invitation and bind it to this copy
     Registry->>Registry: Record IDs as Pending review
     Registry-->>Copy: Registration accepted
-    Copy-->>User: Registered; sharing is a separate step
+    Copy-->>User: Registered. Sharing is a separate step
     User->>Owner: Grant updater edit access to disposable sheet
     Owner->>Owner: Verify actual script, parent sheet, and access
     Note over Owner,Copy: Only then select the Script ID for a remote update
