@@ -17,19 +17,6 @@ preview that supports Mermaid to see the diagrams rendered.
 The existing upload workflow updates one configured script per run. Updating a
 whole group of users is described as a future extension, not implemented here.
 
-## Experiment C: discover copies through registration
-
-[Copy registration](docs/copy-registration.md) adds **TAK lab > Activate this
-copy** to a separate bound template. It submits the live Script ID, Spreadsheet
-ID and code version to a registry you control. A private registry sheet records
-each copy as **Pending review**; 24-hour invitation codes limit enrollment.
-
-The guide includes setup, a Mermaid diagram, a two-copy exercise, and the separate
-edit-access check required before updates. The source and mock tests are ready;
-Google authorization and manual web app deployment are still required. This
-experiment does not automatically share files, grant update access, or upload
-releases to users. The existing A/B examples and deployment workflow stay separate.
-
 ## Start locally (no Google account needed)
 
 Use Node 24 LTS (see `.nvmrc`) and Git. In Windows PowerShell:
@@ -137,6 +124,19 @@ editor/menu uses the current uploaded source (HEAD), so a versioned deployment i
 unnecessary. `clasp run-function` needs additional API-executable setup and is not
 part of this quick start.
 
+## Experiment C: discover copies through registration
+
+[Copy registration](docs/copy-registration.md) adds **TAK lab > Activate this
+copy** to a separate bound template. It submits the live Script ID, Spreadsheet
+ID and code version to a registry you control. A private registry sheet records
+each copy as **Pending review**; 24-hour invitation codes limit enrollment.
+
+The guide includes setup, a Mermaid diagram, a two-copy exercise, and the separate
+edit-access check required before updates. The source and mock tests are ready;
+Google authorization and manual web app deployment are still required. This
+experiment does not automatically share files, grant update access, or upload
+releases to users. The existing A/B examples and deployment workflow stay separate.
+
 ## Optional API provisioning: automate creating the project
 
 This demonstrates the two operations discussed earlier:
@@ -196,20 +196,28 @@ worktrees/checkouts are another way to keep several experiments configured.
 
 ## Git and GitHub Actions
 
-This lab is published privately at
-[martingrossman/TAK_ARCH_TEST](https://github.com/martingrossman/TAK_ARCH_TEST), and
-the local `main` branch tracks `origin/main`. For a separate copy of this lab,
-create an **empty private** repository on GitHub (without generated
-README/license/gitignore), then configure that copy's remote:
+This lab is public at
+[martingrossman/TAK_ARCH_TEST](https://github.com/martingrossman/TAK_ARCH_TEST).
+Clone it directly to work with the original repository:
 
 ```powershell
-git remote add origin https://github.com/YOUR_ACCOUNT/TAK_ARCH_TEST.git
-git push -u origin main
+git clone https://github.com/martingrossman/TAK_ARCH_TEST.git
+Set-Location TAK_ARCH_TEST
 ```
 
-GitHub authentication is needed for that push. `.github/workflows/ci.yml` checks
-syntax, manifests and mock-based tests on Windows and Linux for pushes and pull
-requests. It uses Node 24 and needs no Google secrets.
+To contribute changes, use GitHub's **Fork** button to create a fork under your
+account, then clone your fork and add the public project as `upstream`:
+
+```powershell
+git clone https://github.com/YOUR_ACCOUNT/TAK_ARCH_TEST.git
+Set-Location TAK_ARCH_TEST
+git remote add upstream https://github.com/martingrossman/TAK_ARCH_TEST.git
+```
+
+Push branches to your fork and open a pull request against the public project.
+GitHub authentication is needed to push to your fork. `.github/workflows/ci.yml`
+checks syntax, manifests and mock-based tests on Windows and Linux for pushes and
+pull requests. It uses Node 24 and needs no Google secrets.
 
 ### Optional manual upload workflow
 
