@@ -1,3 +1,4 @@
+/** Tests the invitation-protected registration client and registry with local service doubles. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -13,6 +14,7 @@ const headers = ['Script ID', 'Spreadsheet ID', 'Reported version', 'Registered 
 const key = 'INVITE_' + createHash('sha256').update(invitation).digest('hex');
 const payload = { invitation, scriptId, spreadsheetId, version: '0.1.0' };
 
+/** Starts an in-memory registry implementation and exposes a helper for POST requests. */
 async function registry() {
   const properties = new Map([['REGISTRY_SPREADSHEET_ID', 'private_registry_sheet'],
     [key, JSON.stringify({ expiresAt: Date.now() + 60000 })]]);
@@ -53,6 +55,7 @@ async function registry() {
   return { context, state, properties, post: (data) => context.doPost({ postData: { contents: JSON.stringify(data) } }) };
 }
 
+/** Loads the registration client with optional fake Apps Script services and configuration. */
 async function client(services, configured = true) {
   let code = await readFile(new URL('../examples/registration-client/Code.js', import.meta.url), 'utf8');
   if (configured) code = code.replace('PASTE_YOUR_REGISTRY_EXEC_URL_HERE', 'https://script.google.com/macros/s/test_deployment/exec');

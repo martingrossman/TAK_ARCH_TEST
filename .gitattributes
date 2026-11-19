@@ -1,1 +1,2 @@
+# Normalizes tracked text files to LF line endings across operating systems.
 * text=auto eol=lf

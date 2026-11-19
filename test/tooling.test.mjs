@@ -1,3 +1,4 @@
+/** Tests safe local configuration and explicit Apps Script API provisioning behavior. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';

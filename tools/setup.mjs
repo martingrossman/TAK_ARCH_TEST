@@ -1,3 +1,4 @@
+/** Creates a new, ignored clasp target file for one existing Apps Script project. */
 import { projectDirectory, saveConfig } from './config.mjs';
 
 try {

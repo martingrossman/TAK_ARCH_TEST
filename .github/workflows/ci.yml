@@ -1,3 +1,4 @@
+# Runs syntax, manifest, and behavior checks on every change.
 name: CI
 on:
   push:

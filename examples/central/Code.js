@@ -1,4 +1,7 @@
-/** Set TARGET_SPREADSHEET_ID in this project's Script Properties first. */
+/**
+ * Standalone-script example: reads TARGET_SPREADSHEET_ID from Script Properties
+ * and writes a timestamped greeting to that explicit target spreadsheet.
+ */
 function helloWorld() {
   const id = PropertiesService.getScriptProperties()
     .getProperty('TARGET_SPREADSHEET_ID');

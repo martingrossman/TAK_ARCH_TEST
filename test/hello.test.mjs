@@ -1,8 +1,10 @@
+/** Exercises the bound and central greeting examples against in-memory Apps Script services. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { readFile } from 'node:fs/promises';
 
+/** Loads one Apps Script source file into an isolated test context. */
 async function load(architecture, services) {
   const source = await readFile(new URL(`../examples/${architecture}/Code.js`, import.meta.url), 'utf8');
   const context = vm.createContext(services);
@@ -10,6 +12,7 @@ async function load(architecture, services) {
   return context;
 }
 
+/** Creates a minimal spreadsheet double that records tab creation and cell writes. */
 function fakeSpreadsheet(existing) {
   const state = { writes: [], created: [] };
   const sheet = { getRange(range) {

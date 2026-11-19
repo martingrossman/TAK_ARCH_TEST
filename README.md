@@ -6,6 +6,27 @@ Plain JavaScript keeps the examples readable: no compiler, bundler, runtime npm
 dependencies, or test framework. Node's built-in test runner handles local checks.
 Google executes the actual Apps Script; Node only checks and tests it with mocks.
 
+## File guide
+
+Every runnable JavaScript file begins with a comment describing its purpose.
+The files below use formats where inline comments are unsupported or undesirable,
+so this guide provides their descriptions instead.
+
+| File or folder | What it does |
+|---|---|
+| `package.json` | Defines the Node version and local setup, check, test, and provisioning commands. |
+| `package-lock.json` | Locks the exact packages used by the local npm installation. |
+| `.nvmrc` | Selects Node 24 for Node version managers. |
+| `.gitattributes` | Normalizes tracked text to LF line endings. |
+| `.gitignore` | Excludes dependencies, credentials, local clasp targets, and generated files from Git. |
+| `.github/workflows/ci.yml` | Runs verification on pushes and pull requests. |
+| `.github/workflows/deploy.yml` | Manually verifies and uploads one configured sandbox project. |
+| `examples/*/appsscript.json` | Declares the Apps Script V8 runtime and the minimum OAuth scopes for that example. |
+| `examples/*/.claspignore` | Limits clasp uploads to the example's source and manifest. |
+| `docs/architecture-and-updates.md` | Explains script architectures, safe updates, rollout, and rollback. |
+| `docs/copy-registration.md` | Explains invitation-protected copy registration. |
+| `.obsidian/*.json` | Stores local Obsidian workspace preferences; it does not affect the lab. |
+
 ## Architecture diagrams and updating users
 
 Read [Architecture and remote updates](docs/architecture-and-updates.md) for four

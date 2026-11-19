@@ -1,3 +1,4 @@
+/** Plans or provisions disposable Apps Script lab projects through the Apps Script API. */
 import { access } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';

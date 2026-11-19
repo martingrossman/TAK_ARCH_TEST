@@ -1,3 +1,4 @@
+# Local dependencies, credentials, and generated files that must never enter Git.
 node_modules/
 .clasp.json
 .clasp.*.json

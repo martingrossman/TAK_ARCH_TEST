@@ -1,3 +1,4 @@
+/** Verifies JavaScript syntax and the minimum OAuth scopes in each Apps Script manifest. */
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';

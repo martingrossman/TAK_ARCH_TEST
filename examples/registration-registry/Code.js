@@ -1,6 +1,11 @@
+/**
+ * Private registry web app: creates single-copy invitations and records approved
+ * enrollment requests without granting the sender access to the registry sheet.
+ */
 const REGISTRY_HEADERS = ['Script ID', 'Spreadsheet ID', 'Reported version', 'Registered at UTC', 'Review status'];
 const INVITE_PREFIX = 'INVITE_';
 
+/** Adds owner-only registry administration commands when the registry opens. */
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('TAK registry')
     .addItem('Initialize registry', 'initializeRegistry')
@@ -8,6 +13,7 @@ function onOpen() {
     .addItem('Revoke all invitations', 'revokeInvitations').addToUi();
 }
 
+/** Creates and binds the private registrations tab to this spreadsheet. */
 function initializeRegistry() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const properties = PropertiesService.getScriptProperties();
@@ -20,6 +26,7 @@ function initializeRegistry() {
   SpreadsheetApp.getUi().alert('Registry initialized. Keep this spreadsheet private.');
 }
 
+/** Issues a 24-hour invitation and stores only its hash in Script Properties. */
 function createInvitation() {
   const properties = PropertiesService.getScriptProperties();
   if (!properties.getProperty('REGISTRY_SPREADSHEET_ID')) throw new Error('Initialize the registry first.');
@@ -34,6 +41,7 @@ function createInvitation() {
     SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
+/** Removes every outstanding invitation after an explicit owner confirmation. */
 function revokeInvitations() {
   const ui = SpreadsheetApp.getUi();
   if (ui.alert('Revoke invitations?', 'All outstanding invitation codes will stop working.',
@@ -48,6 +56,7 @@ function revokeInvitations() {
   } finally { lock.releaseLock(); }
 }
 
+/** Handles a web-app enrollment request and returns a deliberately sanitized response. */
 function doPost(event) {
   try {
     const text = event?.postData?.contents;
@@ -60,6 +69,7 @@ function doPost(event) {
   }
 }
 
+/** Validates and records one copy while serializing access with a script lock. */
 function register_(payload) {
   const idPattern = /^[A-Za-z0-9_-]{20,200}$/;
   if (!payload || typeof payload.invitation !== 'string' || !/^[a-f0-9-]{72}$/.test(payload.invitation) ||
@@ -97,17 +107,20 @@ function register_(payload) {
   } finally { lock.releaseLock(); }
 }
 
+/** Refuses to write if the registry tab no longer has the expected columns. */
 function checkHeaders_(sheet) {
   if (JSON.stringify(sheet.getRange(1, 1, 1, REGISTRY_HEADERS.length).getValues()[0]) !== JSON.stringify(REGISTRY_HEADERS)) {
     throw new Error('Unexpected registry headers');
   }
 }
 
+/** Derives the Script Properties key from an invitation without storing it in plain text. */
 function inviteKey_(value) {
   return INVITE_PREFIX + Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, value, Utilities.Charset.UTF_8)
     .map((byte) => (byte & 255).toString(16).padStart(2, '0')).join('');
 }
 
+/** Serializes a web-app response as JSON. */
 function json_(value) {
   return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
 }

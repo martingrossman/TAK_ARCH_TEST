@@ -1,13 +1,19 @@
+/**
+ * Bound-copy client: lets an owner enroll this specific spreadsheet and script
+ * with the private registry, then provides the same greeting demonstration.
+ */
 // Public deployment URL, not a credential. Set before distributing the template.
 const REGISTRY_URL = 'PASTE_YOUR_REGISTRY_EXEC_URL_HERE';
 const LAB_VERSION = '0.1.0';
 
+/** Adds the activation and greeting commands to each opened spreadsheet copy. */
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('TAK lab')
     .addItem('Activate this copy', 'activateThisCopy')
     .addItem('Write Hello World', 'helloWorld').addToUi();
 }
 
+/** Writes the example output to this copy's dedicated lab tab. */
 function helloWorld() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = spreadsheet.getSheetByName('TAK_ARCH_TEST') ||
@@ -18,6 +24,7 @@ function helloWorld() {
   ]);
 }
 
+/** Prompts the owner for an invitation, then registers only after confirmation. */
 function activateThisCopy() {
   const ui = SpreadsheetApp.getUi();
   const answer = ui.prompt('Activate this copy',
@@ -34,6 +41,7 @@ function activateThisCopy() {
   }
 }
 
+/** Validates an invitation and sends this copy's current IDs to the registry. */
 function registerCopy_(invitation) {
   if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(REGISTRY_URL)) {
     throw new Error('The template owner must configure the registry deployment URL first.');

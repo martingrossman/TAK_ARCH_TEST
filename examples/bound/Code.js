@@ -1,4 +1,7 @@
-/** Runs in the editor or menu of a disposable, bound spreadsheet. */
+/**
+ * Bound-sheet example: adds a menu and writes a timestamped greeting to the
+ * active spreadsheet's TAK_ARCH_TEST tab.
+ */
 function helloWorld() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   if (!spreadsheet) {
@@ -12,6 +15,7 @@ function helloWorld() {
   ]);
 }
 
+/** Builds the spreadsheet menu whenever the bound spreadsheet is opened. */
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('TAK lab')
     .addItem('Write Hello World', 'helloWorld').addToUi();

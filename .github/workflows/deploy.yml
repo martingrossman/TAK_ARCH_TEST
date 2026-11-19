@@ -1,3 +1,4 @@
+# Manually verifies and uploads the selected, configured sandbox Apps Script project.
 name: Upload to Google sandbox (manual)
 on:
   workflow_dispatch:

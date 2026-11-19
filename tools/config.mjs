@@ -1,3 +1,4 @@
+/** Shared validation, project-path, and source-loading helpers for the local tooling. */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
