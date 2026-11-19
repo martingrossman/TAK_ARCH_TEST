@@ -54,10 +54,14 @@ Use disposable Google data and sign in with clasp as described in the README.
 3. From PowerShell in the repo root, replace the placeholder and run:
 
 ```powershell
+# Create the ignored local target configuration for the private registry project.
 npm.cmd run setup -- registration-registry YOUR_NEW_REGISTRY_SCRIPT_ID
+# Work in the registry source folder, then always return to the original folder.
 Push-Location examples/registration-registry
 try {
+    # Review the source files that clasp would upload; no remote change yet.
     npx.cmd --yes @google/clasp@3.4.1 show-file-status
+    # Upload the registry source and its manifest to the configured project.
     npx.cmd --yes @google/clasp@3.4.1 push --force
 } finally { Pop-Location }
 ```
@@ -95,10 +99,14 @@ account to lab data while experimenting.
 3. Copy the template's Script ID and upload:
 
 ```powershell
+# Create the ignored local target configuration for the copyable template project.
 npm.cmd run setup -- registration-client YOUR_NEW_TEMPLATE_SCRIPT_ID
+# Work in the template source folder, then always return to the original folder.
 Push-Location examples/registration-client
 try {
+    # Review the source files that clasp would upload; no remote change yet.
     npx.cmd --yes @google/clasp@3.4.1 show-file-status
+    # Upload the template source and its manifest to the configured project.
     npx.cmd --yes @google/clasp@3.4.1 push --force
 } finally { Pop-Location }
 ```

@@ -117,7 +117,8 @@ Script IDs in Project Settings. Sign in with clasp as described in the README.
 Before replacing an existing project, back up its remote source in a new, empty
 folder under the ignored `.local/backups/` directory: run
 `npx.cmd --yes @google/clasp@3.4.1 clone-script SCRIPT_ID` from that folder, replacing
-`SCRIPT_ID` with the real ID. Do this for each target and retain the folder. This
+`SCRIPT_ID` with the real ID. This downloads a backup of the current remote source;
+it does not update the project. Do this for each target and retain the folder. This
 also captures remote edits that are absent from your Git source. Do not clone or
 pull into `examples/bound`, where it could replace the release you plan to upload.
 
@@ -126,24 +127,30 @@ configuration files are ignored by Git. They let you switch targets while keepin
 one source folder and without changing the original `.clasp.json`.
 
 ```powershell
+# Move to the project root and run all checks before any upload.
 Set-Location 'C:\Users\martin\Documents\GitHub\TAK_ARCH_TEST'
 npm.cmd run verify
+# Stop immediately if syntax or tests failed.
 if ($LASTEXITCODE -ne 0) { throw 'Fix the checks before uploading.' }
+# Work from the source folder that will be uploaded to each bound script.
 Set-Location examples/bound
 
 # Refuse to overwrite target configurations you may already have.
 if ((Test-Path .clasp.user-a.json) -or (Test-Path .clasp.user-b.json)) {
     throw 'Inspect the existing user target files before changing them.'
 }
+# Create separate, ignored target files so one source folder can address each user.
 @{ scriptId = 'REPLACE_WITH_SCRIPT_ID_A'; rootDir = '.' } |
     ConvertTo-Json | Set-Content -Encoding utf8 .clasp.user-a.json
 @{ scriptId = 'REPLACE_WITH_SCRIPT_ID_B'; rootDir = '.' } |
     ConvertTo-Json | Set-Content -Encoding utf8 .clasp.user-b.json
+# Resolve absolute paths because clasp 3.4.1 can reject relative target paths.
 $userAConfig = (Resolve-Path .clasp.user-a.json).Path
 $userBConfig = (Resolve-Path .clasp.user-b.json).Path
 
 # Inspect A's target ID and the local files that will be uploaded.
 Get-Content .clasp.user-a.json
+# Preview the local source files selected for A; it does not change A's script.
 npx.cmd --yes @google/clasp@3.4.1 --project $userAConfig show-file-status
 ```
 
@@ -152,7 +159,9 @@ contain only `Code.js` and `appsscript.json`; it checks local upload selection,
 not remote ownership or permissions. After backing up A, upload to A:
 
 ```powershell
+# Replace only user A's remote source with the checked local files.
 npx.cmd --yes @google/clasp@3.4.1 --project $userAConfig push --force
+# Stop the rollout if A's upload did not succeed.
 if ($LASTEXITCODE -ne 0) { throw 'A upload failed. Stop and inspect before retrying.' }
 ```
 
@@ -164,9 +173,13 @@ show its old behavior until you explicitly upload to B.
 After A works, inspect B's target, back it up, and run from `examples/bound`:
 
 ```powershell
+# Inspect B's saved target before changing anything remotely.
 Get-Content .clasp.user-b.json
+# Preview B's local upload set without modifying B.
 npx.cmd --yes @google/clasp@3.4.1 --project $userBConfig show-file-status
+# Replace only user B's remote source with the checked local files.
 npx.cmd --yes @google/clasp@3.4.1 --project $userBConfig push --force
+# Record the failure rather than continuing if B's upload fails.
 if ($LASTEXITCODE -ne 0) { throw 'B upload failed. Record B as failed.' }
 ```
 

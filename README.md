@@ -27,6 +27,22 @@ so this guide provides their descriptions instead.
 | `docs/copy-registration.md` | Explains invitation-protected copy registration. |
 | `.obsidian/*.json` | Stores local Obsidian workspace preferences; it does not affect the lab. |
 
+## Command words used in this guide
+
+All command examples are for **Windows PowerShell**. Copy one line at a time and
+replace only values written in `ALL_CAPITALS`. Never paste a real Google ID or
+token into a public issue, chat, or repository.
+
+| Command or flag | Plain-English meaning |
+|---|---|
+| `Set-Location folder` | Move into `folder`; it stays your working folder. |
+| `Push-Location folder` / `Pop-Location` | Temporarily move into `folder`, then return to where you started. |
+| `npm.cmd run NAME` | Run a named project task. The `.cmd` form avoids a common Windows PowerShell restriction. |
+| `npx.cmd --yes PACKAGE command` | Temporarily download and run the named tool; `--yes` accepts that temporary download. |
+| `show-file-status` | Preview the files clasp would upload. It does not change Google data. |
+| `push --force` | Replace the configured Apps Script project's source files. It does not change spreadsheet cells, but it can replace remote script edits. |
+| `try { ... } finally { ... }` | Run the cleanup step even when a command in the middle fails. |
+
 ## Architecture diagrams and updating users
 
 Read [Architecture and remote updates](docs/architecture-and-updates.md) for four
@@ -43,9 +59,13 @@ whole group of users is described as a future extension, not implemented here.
 Use Node 24 LTS (see `.nvmrc`) and Git. In Windows PowerShell:
 
 ```powershell
+# Move PowerShell into this downloaded project folder.
 Set-Location 'C:\Users\martin\Documents\GitHub\TAK_ARCH_TEST'
+# Download the exact local packages without running package install scripts.
 npm.cmd ci --ignore-scripts
+# Check source syntax and manifests, then run the automated tests.
 npm.cmd run verify
+# Preview creation of a central example; this is a dry run and contacts no Google service.
 npm.cmd run provision -- central
 ```
 
@@ -85,6 +105,7 @@ Enable **Google Apps Script API** in [Apps Script user settings](https://script.
 Then run from the repo root:
 
 ```powershell
+# Open Google's sign-in flow so clasp can upload to projects you own.
 npx.cmd --yes @google/clasp@3.4.1 login
 ```
 
@@ -102,10 +123,15 @@ dependency or required for CI tests. All commands pin the same release, 3.4.1.
 4. Replace the placeholder below with that ID, then run:
 
 ```powershell
+# Save this particular Apps Script ID locally; the generated file is ignored by Git.
 npm.cmd run setup -- bound YOUR_NEW_SCRIPT_ID
+# Temporarily enter the folder whose Code.js and manifest will be uploaded.
 Push-Location examples/bound
+# List the files clasp would upload. This changes nothing remotely.
 npx.cmd --yes @google/clasp@3.4.1 show-file-status
+# Upload the listed source files. --force permits the sample manifest to replace the default one.
 npx.cmd --yes @google/clasp@3.4.1 push --force
+# Return to the folder used before Push-Location.
 Pop-Location
 ```
 
@@ -125,10 +151,15 @@ The allowlist in `.claspignore` uploads only `Code.js` and `appsscript.json`.
 3. From the repo root:
 
 ```powershell
+# Save this standalone Apps Script ID locally; the generated file is ignored by Git.
 npm.cmd run setup -- central YOUR_NEW_SCRIPT_ID
+# Temporarily enter the central-example source folder.
 Push-Location examples/central
+# Confirm the exact files that would be uploaded; this is a read-only check.
 npx.cmd --yes @google/clasp@3.4.1 show-file-status
+# Upload the central example and allow its manifest to replace the default manifest.
 npx.cmd --yes @google/clasp@3.4.1 push --force
+# Return to the folder used before Push-Location.
 Pop-Location
 ```
 
@@ -176,7 +207,9 @@ route for the same target.
 Preview first (replace the placeholder with a real lab spreadsheet ID):
 
 ```powershell
+# Show what a new bound project would look like; this does not create it.
 npm.cmd run provision -- bound YOUR_NEW_SPREADSHEET_ID
+# Show what a new standalone project would look like; this also makes no Google changes.
 npm.cmd run provision -- central
 ```
 
@@ -193,11 +226,15 @@ token. Never commit tokens or paste them into a chat.
 PowerShell 7 can read it without displaying it or putting it in command history:
 
 ```powershell
+# Keep the temporary token hidden while you type it; it exists only in this PowerShell window.
 $env:GOOGLE_ACCESS_TOKEN = Read-Host 'Paste short-lived access token' -MaskInput
 try {
+  # Create and upload a new bound project. --apply is the step that changes Google data.
   npm.cmd run provision -- bound YOUR_NEW_SPREADSHEET_ID --apply
-  # Or: npm.cmd run provision -- central --apply
+  # Alternatively, create and upload a new standalone project instead.
+  # npm.cmd run provision -- central --apply
 } finally {
+  # Remove the temporary token from this PowerShell window when finished.
   Remove-Item Env:GOOGLE_ACCESS_TOKEN -ErrorAction SilentlyContinue
 }
 ```
@@ -222,7 +259,9 @@ This lab is public at
 Clone it directly to work with the original repository:
 
 ```powershell
+# Download the public project into a new TAK_ARCH_TEST folder.
 git clone https://github.com/martingrossman/TAK_ARCH_TEST.git
+# Enter the downloaded folder before running project commands.
 Set-Location TAK_ARCH_TEST
 ```
 
@@ -230,8 +269,11 @@ To contribute changes, use GitHub's **Fork** button to create a fork under your
 account, then clone your fork and add the public project as `upstream`:
 
 ```powershell
+# Download your personal GitHub copy, where you can push changes.
 git clone https://github.com/YOUR_ACCOUNT/TAK_ARCH_TEST.git
+# Enter the downloaded folder.
 Set-Location TAK_ARCH_TEST
+# Name the original public repository "upstream" so you can fetch its updates later.
 git remote add upstream https://github.com/martingrossman/TAK_ARCH_TEST.git
 ```
 
