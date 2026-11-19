@@ -17,6 +17,19 @@ preview that supports Mermaid to see the diagrams rendered.
 The existing upload workflow updates one configured script per run. Updating a
 whole group of users is described as a future extension, not implemented here.
 
+## Experiment C: discover copies through registration
+
+[Copy registration](docs/copy-registration.md) adds **TAK lab > Activate this
+copy** to a separate bound template. It submits the live Script ID, Spreadsheet
+ID and code version to a registry you control. A private registry sheet records
+each copy as **Pending review**; 24-hour invitation codes limit enrollment.
+
+The guide includes setup, a Mermaid diagram, a two-copy exercise, and the separate
+edit-access check required before updates. The source and mock tests are ready;
+Google authorization and manual web app deployment are still required. This
+experiment does not automatically share files, grant update access, or upload
+releases to users. The existing A/B examples and deployment workflow stay separate.
+
 ## Start locally (no Google account needed)
 
 Use Node 24 LTS (see `.nvmrc`) and Git. In Windows PowerShell:
@@ -118,7 +131,7 @@ Pop-Location
    The executing Google user must have edit access to that sheet.
 
 Script Properties are remote settings; clasp does not upload them with source.
-First-run runtime consent is separate from clasp login. There is no web app,
+First-run runtime consent is separate from clasp login. In examples A and B there is no web app,
 public endpoint, installable trigger, or API executable in this lab. Running the
 editor/menu uses the current uploaded source (HEAD), so a versioned deployment is
 unnecessary. `clasp run-function` needs additional API-executable setup and is not
@@ -183,9 +196,11 @@ worktrees/checkouts are another way to keep several experiments configured.
 
 ## Git and GitHub Actions
 
-The local repo starts on `main` with an initial commit. No GitHub repository or
-remote is created automatically. When ready, create an **empty private** repository
-on GitHub (without generated README/license/gitignore), then:
+This lab is published privately at
+[martingrossman/TAK_ARCH_TEST](https://github.com/martingrossman/TAK_ARCH_TEST), and
+the local `main` branch tracks `origin/main`. For a separate copy of this lab,
+create an **empty private** repository on GitHub (without generated
+README/license/gitignore), then configure that copy's remote:
 
 ```powershell
 git remote add origin https://github.com/YOUR_ACCOUNT/TAK_ARCH_TEST.git

@@ -4,6 +4,11 @@ Study this in order: where code runs, how an existing copy gets an update, then
 how to roll out the same release to several users. The commands below are for
 disposable TAK_ARCH_TEST projects. No updates run just by reading this guide.
 
+For the missing enrollment step, see [Copy registration](copy-registration.md).
+That experiment adds an activation menu and an invitation-protected registry so
+copies can report their new IDs. Registration and permission to update remain
+separate checks.
+
 ## 1. Bound scripts: one codebase, several running copies
 
 You maintain the source once in Git. Each spreadsheet has its own Apps Script

@@ -3,8 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
 export function projectDirectory(architecture) {
-  if (!['bound', 'central'].includes(architecture)) {
-    throw new Error('Architecture must be bound or central.');
+  if (!['bound', 'central', 'registration-client', 'registration-registry'].includes(architecture)) {
+    throw new Error('Choose bound, central, registration-client or registration-registry.');
   }
   return fileURLToPath(new URL(`../examples/${architecture}/`, import.meta.url));
 }

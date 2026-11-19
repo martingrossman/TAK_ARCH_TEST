@@ -4,7 +4,13 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-for (const folder of ['tools', 'test', 'examples/bound', 'examples/central']) {
+const scopes = {
+  bound: ['spreadsheets.currentonly'],
+  central: ['spreadsheets'],
+  'registration-client': ['spreadsheets.currentonly', 'script.external_request'],
+  'registration-registry': ['spreadsheets']
+};
+for (const folder of ['tools', 'test', ...Object.keys(scopes).map((name) => `examples/${name}`)]) {
   for (const file of await readdir(join(root, folder))) {
     const path = join(root, folder, file);
     if (/\.(mjs|js)$/.test(file)) {
@@ -13,9 +19,9 @@ for (const folder of ['tools', 'test', 'examples/bound', 'examples/central']) {
     }
     if (file === 'appsscript.json') {
       const manifest = JSON.parse(await readFile(path, 'utf8'));
-      const scope = folder.endsWith('bound') ? 'spreadsheets.currentonly' : 'spreadsheets';
+      const expected = scopes[folder.split('/')[1]].map((scope) => `https://www.googleapis.com/auth/${scope}`);
       if (manifest.runtimeVersion !== 'V8' ||
-          JSON.stringify(manifest.oauthScopes) !== JSON.stringify([`https://www.googleapis.com/auth/${scope}`])) {
+          JSON.stringify(manifest.oauthScopes) !== JSON.stringify(expected)) {
         throw new Error(`Unexpected runtime or scopes in ${path}`);
       }
     }

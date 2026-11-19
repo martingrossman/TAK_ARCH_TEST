@@ -5,6 +5,7 @@ import { projectDirectory, validateId, sourceFiles, saveConfig } from './config.
 
 export function planProvision(args) {
   const [architecture, ...rest] = args;
+  if (!['bound', 'central'].includes(architecture)) throw new Error('API provisioning supports bound or central only.');
   projectDirectory(architecture);
   const apply = rest.at(-1) === '--apply';
   const positional = apply ? rest.slice(0, -1) : rest;
