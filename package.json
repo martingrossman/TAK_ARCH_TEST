@@ -10,6 +10,7 @@
     "check": "node tools/check.mjs",
     "verify": "npm run check && npm test",
     "setup": "node tools/setup.mjs",
-    "provision": "node tools/provision.mjs"
+    "provision": "node tools/provision.mjs",
+    "release-webapp": "node tools/webapp-release.mjs"
   }
 }
