@@ -1,6 +1,8 @@
 # TAK_ARCH_TEST
 
 A small, independent architecture lab for Google Sheets + Google Apps Script.
+
+**Experiment D:** [Per-user bound web apps and /exec deployments](docs/per-user-webapp.md) models one copied Sheet + bound script + /exec URL per user, with mocked deployment-update tests.
 There is no production TAK code, dependency, configuration, or remote here.
 Plain JavaScript keeps the examples readable: no compiler, bundler, runtime npm
 dependencies, or test framework. Node's built-in test runner handles local checks.
