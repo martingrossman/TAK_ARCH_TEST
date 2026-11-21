@@ -9,7 +9,8 @@ const scopes = {
   bound: ['spreadsheets.currentonly'],
   central: ['spreadsheets'],
   'registration-client': ['spreadsheets.currentonly', 'script.external_request'],
-  'registration-registry': ['spreadsheets']
+  'registration-registry': ['spreadsheets'],
+  'per-user-webapp': ['spreadsheets']
 };
 for (const folder of ['tools', 'test', ...Object.keys(scopes).map((name) => `examples/${name}`)]) {
   for (const file of await readdir(join(root, folder))) {
